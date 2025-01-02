@@ -14,8 +14,20 @@ datasource db {
 }
 
 model User {
-  id           Int    @id @default(autoincrement())
-  phoneNumber  String @unique
-  name         String
-  passwordHash String
+  id                   Int           @id @default(autoincrement())
+  name                 String
+  phoneNumber          String        @unique
+  passwordHash         String
+  transactionsSent     Transaction[] @relation("SentTransactions")
+  transactionsReceived Transaction[] @relation("ReceivedTransactions")
+}
+
+model Transaction {
+  id         Int      @id @default(autoincrement())
+  amount     Float
+  date       DateTime @default(now())
+  senderId   Int
+  receiverId Int
+  sender     User     @relation("SentTransactions", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedTransactions", fields: [receiverId], references: [id])
 }

@@ -25,8 +25,8 @@ export async function update(id: number, data: Partial<Omit<User, "id">>) {
   }
 }
 
-export async function findById(id: number) {
-  return db.user.findUnique({ where: { id } });
+export async function findByPhoneNumber(phoneNumber: string) {
+  return db.user.findUnique({ where: { phoneNumber } });
 }
 
 export async function login(phoneNumber: string, password: string) {
@@ -37,4 +37,25 @@ export async function login(phoneNumber: string, password: string) {
   const isCorrectPassword = await bcrypt.compare(password, user.passwordHash);
   if (!isCorrectPassword) return null;
   return user;
+}
+
+export async function getUserInfo(userId: number) {
+  const user = await db.user.findUnique({ where: { id: userId } });
+
+  const debt = await db.transaction.aggregate({
+    _sum: { amount: true },
+    where: { receiverId: userId },
+  });
+
+  const withdraw = await db.transaction.aggregate({
+    _sum: { amount: true },
+    where: { senderId: userId },
+  });
+
+  return {
+    name: user?.name,
+    debt: debt._sum.amount ?? 0,
+    withdraw: withdraw._sum.amount ?? 0,
+    total: (withdraw._sum.amount ?? 0) - (debt._sum.amount ?? 0),
+  };
 }

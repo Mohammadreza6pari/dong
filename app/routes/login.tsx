@@ -29,7 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Route() {
-  const error = useActionData<{ error: string }>()?.error;
+  const error = useActionData<typeof action>()?.error;
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

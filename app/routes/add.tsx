@@ -1,4 +1,27 @@
+import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { Form, useActionData } from "@remix-run/react";
+import { createTransaction } from "~/models/transaction";
+import { getUserId } from "~/services/auth";
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const userId = await getUserId(request);
+  if (!userId) return redirect("/login", 302);
+
+  const formData = await request.formData();
+
+  const phoneNumber = formData.get("phoneNumber") as string;
+  const amount = parseFloat(formData.get("amount") as string);
+
+  const trx = await createTransaction(userId, phoneNumber, amount);
+
+  if (!trx) return json({ error: "شماره در سیستم موجود نیست" }, 400);
+
+  return redirect("/transactions");
+};
+
 export default function Route() {
+  const error = useActionData<typeof action>()?.error;
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
@@ -6,7 +29,7 @@ export default function Route() {
           فرم تراکنش جدید
         </h2>
 
-        <form className="space-y-4">
+        <Form method="POST" className="space-y-4">
           <div>
             <label
               htmlFor="amount"
@@ -34,7 +57,7 @@ export default function Route() {
             <input
               type="tel"
               id="sender"
-              name="sender"
+              name="phoneNumber"
               placeholder="شماره تلفن فرستنده را وارد کنید"
               pattern="^(\+98|0)?9\d{9}$" // Regex pattern for Iranian phone numbers
               required
@@ -42,7 +65,6 @@ export default function Route() {
             />
           </div>
 
-          {/* Submit Button */}
           <div>
             <button
               type="submit"
@@ -51,7 +73,9 @@ export default function Route() {
               ارسال تراکنش
             </button>
           </div>
-        </form>
+
+          <p className="text-sm text-center text-red-500 mt-4">{error}</p>
+        </Form>
       </div>
     </div>
   );

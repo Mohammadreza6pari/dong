@@ -1,16 +1,17 @@
 import { json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { findById, User } from "~/models/user";
+import { getUserInfo } from "~/models/user";
 import { getUserId } from "~/services/auth";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await getUserId(request);
   if (!userId) return redirect("login", 302);
-  return json(await findById(userId));
+  return json(await getUserInfo(userId));
 };
 
 export default function Route() {
-  const { name } = useLoaderData<User>();
+  const { name, debt, withdraw, total } = useLoaderData<typeof loader>();
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-sm bg-white rounded-lg shadow-lg p-6">
@@ -22,15 +23,17 @@ export default function Route() {
         <div className="space-y-3">
           <div className="flex justify-between text-gray-700">
             <span className="font-medium">بدهی</span>
-            <span className="font-semibold text-red-500">$1,200</span>
+            <span className="font-semibold text-red-500">{debt} تومان</span>
           </div>
           <div className="flex justify-between text-gray-700">
             <span className="font-medium">طلب</span>
-            <span className="font-semibold text-yellow-500">$800</span>
+            <span className="font-semibold text-yellow-500">
+              {withdraw} تومان
+            </span>
           </div>
           <div className="flex justify-between text-gray-700">
             <span className="font-medium">تراز کلی</span>
-            <span className="font-semibold text-green-500">$2,000</span>
+            <span className="font-semibold text-green-500">{total} تومان</span>
           </div>
         </div>
 
