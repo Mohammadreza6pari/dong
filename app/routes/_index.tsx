@@ -10,7 +10,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function Route() {
-  const { name, debt, withdraw, total } = useLoaderData<typeof loader>();
+  const { name, debtAmount, totalAmount, withdrawAmount } =
+    useLoaderData<typeof loader>();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -23,17 +24,21 @@ export default function Route() {
         <div className="space-y-3">
           <div className="flex justify-between text-gray-700">
             <span className="font-medium">بدهی</span>
-            <span className="font-semibold text-red-500">{debt} تومان</span>
+            <span className="font-semibold text-red-500">
+              {debtAmount} تومان
+            </span>
           </div>
           <div className="flex justify-between text-gray-700">
             <span className="font-medium">طلب</span>
             <span className="font-semibold text-yellow-500">
-              {withdraw} تومان
+              {withdrawAmount} تومان
             </span>
           </div>
           <div className="flex justify-between text-gray-700">
             <span className="font-medium">تراز کلی</span>
-            <span className="font-semibold text-green-500">{total} تومان</span>
+            <span className="font-semibold text-green-500">
+              {totalAmount} تومان
+            </span>
           </div>
         </div>
 
@@ -49,6 +54,12 @@ export default function Route() {
             className="block w-full text-center px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
           >
             تراکنش جدید
+          </a>
+          <a
+            href="/logout"
+            className="block text-center px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+          >
+            خروج
           </a>
         </div>
       </div>

@@ -14,20 +14,18 @@ datasource db {
 }
 
 model User {
-  id                   Int           @id @default(autoincrement())
-  name                 String
-  phoneNumber          String        @unique
-  passwordHash         String
-  transactionsSent     Transaction[] @relation("SentTransactions")
-  transactionsReceived Transaction[] @relation("ReceivedTransactions")
+  id           Int    @id @default(autoincrement())
+  name         String
+  phoneNumber  String @unique
+  passwordHash String
 }
 
-model Transaction {
-  id         Int      @id @default(autoincrement())
-  amount     Float
-  date       DateTime @default(now())
-  senderId   Int
-  receiverId Int
-  sender     User     @relation("SentTransactions", fields: [senderId], references: [id])
-  receiver   User     @relation("ReceivedTransactions", fields: [receiverId], references: [id])
+model Debt {
+  userId1   Int
+  userId2   Int
+  amount    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId1, userId2])
 }

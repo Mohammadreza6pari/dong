@@ -1,6 +1,6 @@
 import { json, LoaderFunctionArgs, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { getUserTransactions } from "~/models/transaction";
+import { getUserDebts } from "~/models/transaction";
 import { getUserId } from "~/services/auth";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -8,7 +8,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (!userId) return redirect("/login", 302);
 
-  return json(await getUserTransactions(userId));
+  return json(await getUserDebts(userId));
 }
 
 export default function Route() {
@@ -24,20 +24,18 @@ export default function Route() {
         <ul className="space-y-4">
           {transactions.map((transaction) => (
             <li
-              key={transaction.id}
+              key={transaction.phoneNumber}
               className={`flex justify-between items-center p-4 rounded-lg shadow-md ${
-                transaction.type === "receiver" ? "bg-green-100" : "bg-red-100"
+                transaction.userAsks ? "bg-green-100" : "bg-red-100"
               }`}
             >
               <div className="flex items-center">
                 <span
                   className={`text-sm font-medium ${
-                    transaction.type === "receiver"
-                      ? "text-green-600"
-                      : "text-red-600"
+                    transaction.userAsks ? "text-green-600" : "text-red-600"
                   }`}
                 >
-                  {transaction.type === "receiver" ? "دریافت از" : "ارسال به"}{" "}
+                  {transaction.userAsks ? "طلب از" : "بدهی به"}{" "}
                   {transaction.name}
                 </span>
               </div>
@@ -47,9 +45,6 @@ export default function Route() {
               <div className="text-right">
                 <div className="text-lg font-semibold">
                   تومان {transaction.amount}
-                </div>
-                <div className="text-sm text-gray-500">
-                  {String(transaction.date).substring(0, 10)}
                 </div>
               </div>
             </li>
