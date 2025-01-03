@@ -1,22 +1,38 @@
 FROM node:18-bullseye-slim as base
 
-RUN apt-get update
+# Install dependencies required for build
+RUN apt-get update && apt-get install -y openssl
+
+# Set working directory
+RUN mkdir /app
+WORKDIR /app
 
 FROM base as build
 
-RUN mkdir /app
-WORKDIR /app
-ADD . .
+# Copy project files
+COPY package.json package-lock.json ./
+COPY prisma ./prisma/
 
-RUN npm i
+# Install dependencies and generate Prisma client
+RUN npm install
 RUN npx prisma generate
 
-FROM base
+# Copy the rest of the application
+COPY . .
 
-RUN mkdir /app
-WORKDIR /app
+# Build the application
+RUN npm run build
+
+FROM base as production
+
+# Set NODE_ENV for production
 ENV NODE_ENV production
 
-COPY --from=build /app .
+# Copy build files and node_modules from build stage
+COPY --from=build /app /app
 
-CMD [ "bash", "-c", "npx prisma db push && npx prisma db seed && npm run build && npm run start" ]
+# Expose the app's default port
+EXPOSE 3000
+
+# Start the application
+CMD [ "bash", "-c", "npx prisma db push && npm run start" ]

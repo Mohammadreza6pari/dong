@@ -7,10 +7,12 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc",
-    "up-deps": "docker compose up -d webapp--database"
-  },
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "ts-node prisma/seed.ts",
+    "start": "remix-serve ./build/server/index.js"
+    },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
