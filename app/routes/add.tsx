@@ -1,11 +1,10 @@
 import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 import { createTransaction } from "~/models/transaction";
-import { getUserId } from "~/services/auth";
+import { requireUserId } from "~/services/auth";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const userId = await getUserId(request);
-  if (!userId) return redirect("/login", 302);
+  const userId = await requireUserId(request);
 
   const formData = await request.formData();
 
