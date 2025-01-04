@@ -46,13 +46,13 @@ export default function Route() {
             href="/transactions"
             className="block w-full text-center text-blue-500 hover:underline"
           >
-            تاریخچه تراکنش ها
+            مشاهده وضعیت
           </a>
           <a
             href="/add"
             className="block w-full text-center px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
           >
-            تراکنش جدید
+            ثبت بدهی
           </a>
           <a
             href="/logout"

@@ -16,9 +16,14 @@ export default function Route() {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="w-full max-w-3xl bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          تاریخچه تراکنش‌ها
+          وضعیت بدهی‌ها و طلب‌ها از افراد
         </h2>
-
+        <a
+          href="/"
+          className="block text-center px-4 py-2 my-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+        >
+          بازگشت به خانه
+        </a>
         <ul className="space-y-4">
           {transactions.map((transaction) => (
             <li
@@ -40,6 +45,14 @@ export default function Route() {
               <div className="text-sm font-medium">
                 {transaction.phoneNumber}
               </div>
+              {transaction.userAsks && (
+                <a
+                  href={`/add?phoneNumber=${transaction.phoneNumber}&amount=${transaction.amount}`}
+                  className="block text-center px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
+                >
+                  تسویه طلب
+                </a>
+              )}
               <div className="text-right">
                 <div className="text-lg font-semibold">
                   تومان {transaction.amount}
